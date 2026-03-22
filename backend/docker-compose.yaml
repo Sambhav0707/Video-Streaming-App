@@ -1,0 +1,40 @@
+services:
+  # what are the services we are using in the app/project
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fastapi_container
+    ports:
+      - "8000:8000"
+    image: fastapi_image # if we are specifying our custom image than we have to specify the build 
+    environment:
+      - DATABASE_URL=postgresql://postgres:test123@db:5432/mydatabase
+    volumes:
+      # this is bind mount volume :- it is mainly used to map particular file/dir to the container so that the changes in files get immediatly synced with the container
+      - ./:/app
+
+  db:
+    image: postgres:15 # here we are using official image so we dont need to specify any build
+    container_name: postgres_db
+    ports:
+      - "5432:5432" # by default postgres opens up on port: 5432
+    environment:
+      # environments are imp as postgres needs to know the following info
+      POSTGRES_DB: mydatabase
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # maping the name volume to the path where data is generally stored 
+  redis:
+    image: redis:7.4.2
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  # named volumes :- used to persist the data 
+  postgres_data:
+  redis_data:
