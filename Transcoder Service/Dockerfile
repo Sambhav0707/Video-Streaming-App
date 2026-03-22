@@ -16,6 +16,9 @@ RUN uv pip install --system --no-cache -r requirements.txt
 # Copy the application code to the container
 COPY . .
 
+ENV FORCE_COLOR=1
+ENV PYTHONUNBUFFERED=1
+
 # Command to run the application
 CMD ["python" , "main.py"]
 

@@ -14,7 +14,22 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final videosFuture = VideoService().getVideos();
+  late Future<List<Map<String, dynamic>>> videosFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchVideos();
+  }
+
+  Future<void> _fetchVideos() async {
+    setState(() {
+      videosFuture = VideoService().getVideos();
+    });
+    try {
+      await videosFuture;
+    } catch (_) {}
+  }
 
   Widget _buildVideoCard(BuildContext context, Map<String, dynamic> video) {
     final thumbnail =
@@ -133,10 +148,6 @@ class _HomePageState extends State<HomePage> {
             child: IconButton(
               onPressed: () {
                 context.read<AuthCubit>().logoutUser();
-                Navigator.of(context).pushAndRemoveUntil(
-                  SignupPage.route(),
-                  (route) => false,
-                );
               },
               icon: const Icon(Icons.logout, color: Colors.white, size: 26),
               tooltip: 'Logout',
@@ -154,44 +165,82 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
       ),
-      body: FutureBuilder(
-        future: videosFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator.adaptive());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text(snapshot.error.toString()));
-          }
-          final videos = snapshot.data!;
+      body: RefreshIndicator(
+        onRefresh: _fetchVideos,
+        color: Colors.indigoAccent,
+        child: FutureBuilder(
+          future: videosFuture,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            }
+            if (snapshot.hasError) {
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+                  Center(child: Text(snapshot.error.toString())),
+                ],
+              );
+            }
+            final videos = snapshot.data!;
 
-          return LayoutBuilder(
-            builder: (context, constraints) {
-              final isWide = constraints.maxWidth > 700;
-              return isWide
-                  ? GridView.builder(
-                      padding: const EdgeInsets.all(20),
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 400,
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20,
-                        childAspectRatio: 1.1,
-                      ),
-                      itemCount: videos.length,
-                      itemBuilder: (context, index) {
-                        return _buildVideoCard(context, videos[index]);
-                      },
-                    )
-                  : ListView.builder(
-                      padding: const EdgeInsets.only(top: 10, bottom: 20),
-                      itemCount: videos.length,
-                      itemBuilder: (context, index) {
-                        return _buildVideoCard(context, videos[index]);
-                      },
-                    );
-            },
-          );
-        },
+            if (videos.isEmpty) {
+              return ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.3),
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.videocam_off_outlined, size: 80, color: Colors.grey.shade400),
+                        const SizedBox(height: 16),
+                        Text(
+                          'There are no videos currently.',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.grey.shade600,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              );
+            }
+
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                final isWide = constraints.maxWidth > 700;
+                return isWide
+                    ? GridView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(20),
+                        gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 400,
+                          crossAxisSpacing: 20,
+                          mainAxisSpacing: 20,
+                          childAspectRatio: 1.1,
+                        ),
+                        itemCount: videos.length,
+                        itemBuilder: (context, index) {
+                          return _buildVideoCard(context, videos[index]);
+                        },
+                      )
+                    : ListView.builder(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        padding: const EdgeInsets.only(top: 10, bottom: 20),
+                        itemCount: videos.length,
+                        itemBuilder: (context, index) {
+                          return _buildVideoCard(context, videos[index]);
+                        },
+                      );
+              },
+            );
+          },
+        ),
       ),
     );
   }

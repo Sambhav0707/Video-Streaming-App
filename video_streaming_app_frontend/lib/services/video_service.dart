@@ -23,8 +23,7 @@ class VideoService {
     print('VideoService - getVideos: Fetching videos from $backendUrl/all');
     try {
       final res = await http
-          .get(Uri.parse("$backendUrl/all"), headers: await _getCookieHeader())
-          .timeout(const Duration(seconds: 10));
+          .get(Uri.parse("$backendUrl/all"), headers: await _getCookieHeader());
       print(res.body);
       print('VideoService - getVideos: Response status: ${res.statusCode}');
       if (res.statusCode != 200) {

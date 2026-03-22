@@ -28,7 +28,7 @@ class UploadVideoService {
     final res = await http.get(
       Uri.parse("$backendUrl/url/thumbnail?thumbnail_id=$thumbnailId"),
       headers: await _getCookieHeader(),
-    ).timeout(const Duration(seconds: 10));
+    );
 
     print('UploadVideoService - getPresignedUrlForThumbnail: Response status: ${res.statusCode}');
     if (res.statusCode == 200) {
@@ -44,7 +44,7 @@ class UploadVideoService {
     final res = await http.get(
       Uri.parse("$backendUrl/url"),
       headers: await _getCookieHeader(),
-    ).timeout(const Duration(seconds: 10));
+    );
 
     print('UploadVideoService - getPresignedUrlForVideo: Response status: ${res.statusCode}');
     if (res.statusCode == 200) {
@@ -91,7 +91,7 @@ class UploadVideoService {
         'video_id': s3Key,
         'video_s3_key': s3Key,
       }),
-    ).timeout(const Duration(seconds: 10));
+    );
 
     print('UploadVideoService - uploadMetadata: Response status: ${res.statusCode}');
     return res.statusCode == 200;

@@ -67,6 +67,7 @@ class _MyAppState extends State<MyApp> {
           ),
         ),
       ),
+      debugShowCheckedModeBanner: false,
       home: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
           // If logged in, go to home, else stay on Auth routes.

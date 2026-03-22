@@ -22,13 +22,13 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
         aspectRatio: 16 / 9,
         fit: BoxFit.fitHeight,
         autoPlay: true,
-        controlsConfiguration: BetterPlayerControlsConfiguration(
+        controlsConfiguration: const BetterPlayerControlsConfiguration(
           enableFullscreen: true,
           enablePlayPause: true,
           enableProgressBar: true,
           enablePlaybackSpeed: true,
           enableQualities: true,
-
+          showControlsOnInitialize: false,
         ),
       ),
       betterPlayerDataSource: BetterPlayerDataSource.network(

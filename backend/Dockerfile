@@ -19,5 +19,8 @@ COPY . .
 # Expose port 8000 for access
 EXPOSE 8000
 
+ENV FORCE_COLOR=1
+ENV PYTHONUNBUFFERED=1
+
 # Command to run the application using uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "--use-colors"]
