@@ -42,6 +42,7 @@ dependencies:
   image_picker: ^1.1.2
   path_provider: ^2.1.5
   path: ^1.9.1
+  flutter_dotenv: ^5.1.0
   better_player:
     git: https://github.com/Lo4D/better-player-ultra.git
 
@@ -67,6 +68,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - .env
 
   # To add assets to your application, add an assets section, like this:
   # assets:

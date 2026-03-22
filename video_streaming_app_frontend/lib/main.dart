@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:video_streaming_app_frontend/cubits/auth/auth_cubit.dart';
 import 'package:video_streaming_app_frontend/cubits/upload_video/upload_video_cubit.dart';
 import 'package:video_streaming_app_frontend/pages/auth/signup_page.dart';
 import 'package:video_streaming_app_frontend/pages/home/home_page.dart';
-void main() {
+
+Future<void> main() async {
+  await dotenv.load(fileName: ".env");
   runApp(
     MultiBlocProvider(
       providers: [

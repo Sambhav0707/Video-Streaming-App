@@ -111,6 +111,6 @@ sequenceDiagram
 
 ## 🚀 Future Improvements for Scaling
 
-1.  **Environment Variables**: Currently, the `backendUrl` is hardcoded in the Services (e.g., `http://192.168.29.36:8000`). Implementing the `flutter_dotenv` package to read from a `.env` file will prevent having to rewrite IPs when moving from Dev -> Staging -> Production.
+1.  **Environment Variables**: The app leverages `flutter_dotenv` to securely load routing parameters such as `API_BASE_URL` from a `.env` file at runtime. This prevents hardcoded IP addresses from lingering in version control and makes testing completely local vs running on physical devices seamless.
 2.  **Chunked Uploads for S3**: For massive videos (>5GB), the current basic `PUT` request will timeout or fail on spotty cellular networks. Implementing S3 **Multipart Uploads** locally in Dart would allow pausing, resuming, and retrying individual 5MB chunks.
 3.  **Background Uploading**: Use `flutter_workmanager` or a native background execution package to allow the user to minimize the app while the video uploads to S3 in the background.

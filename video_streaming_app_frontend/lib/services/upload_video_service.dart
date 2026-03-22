@@ -3,10 +3,11 @@ import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class UploadVideoService {
   final FlutterSecureStorage secureStorage = FlutterSecureStorage();
-  String backendUrl = "http://192.168.29.36:8000/upload/video";
+  String backendUrl = "${dotenv.env['API_BASE_URL']}/upload/video";
 
   Future<Map<String, String>> _getCookieHeader() async {
     final accessToken = await secureStorage.read(key: 'access_token');
