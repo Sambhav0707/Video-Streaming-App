@@ -38,6 +38,22 @@ This diagram outlines how the Flutter app rapidly fetches cached feeds and nativ
 
 ---
 
+## 📱 App Screenshots
+
+Here is a glimpse of the rich, cross-platform UI in action:
+
+<div style="display: flex; flex-wrap: wrap; gap: 10px;">
+  <img src="./login.jpeg" alt="Login Page" height="400" />
+  <img src="./otp.jpeg" alt="OTP Verification" height="400" />
+  <img src="./create%20account.jpeg" alt="Create Account" height="400" />
+  <img src="./home%20page.jpeg" alt="Home Page" height="400" />
+  <img src="./video%20player%20page.jpeg" alt="Video Player" height="400" />
+  <img src="./horizontal%20view%20.jpeg" alt="Horizontal View" height="200" />
+  <img src="./upload.jpeg" alt="Upload Page" height="400" />
+</div>
+
+---
+
 ## 🛠️ Installation & Setup Guide
 
 ### 1. Backend Setup (FastAPI)

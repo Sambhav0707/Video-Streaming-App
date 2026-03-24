@@ -30,7 +30,7 @@ def get_all_videos(db: Session = Depends(get_db), user=Depends(get_current_user)
         )
         .all()
     )
-
+    print(videos)
     return videos
 
 
