@@ -81,34 +81,34 @@ Instead of routing heavy video files through the FastAPI server (which creates s
 ```mermaid
 sequenceDiagram
     participant Client
-    participant FastAPI (Backend)
-    participant Postgres DB
-    participant AWS S3 (Raw Video)
-    participant Transcoder (SQS + ECS)
-    participant AWS S3 (Processed)
+    participant Backend as FastAPI (Backend)
+    participant DB as Postgres DB
+    participant S3Raw as AWS S3 (Raw Video)
+    participant Transcoder as Transcoder (SQS + ECS)
+    participant S3Processed as AWS S3 (Processed)
 
-    Note over Client, FastAPI (Backend): 1. Initialization Phase
-    Client->>FastAPI (Backend): GET /upload/video/url & /thumbnail
-    FastAPI (Backend)-->>Client: Returns S3 Presigned URLs + video_id
+    Note over Client, Backend: 1. Initialization Phase
+    Client->>Backend: GET /upload/video/url & /thumbnail
+    Backend-->>Client: Returns S3 Presigned URLs + video_id
 
-    Note over Client, AWS S3 (Raw Video): 2. Direct Upload Phase
-    Client->>AWS S3 (Raw Video): PUT Video File directly to Presigned URL
-    Client->>AWS S3 (Raw Video): PUT Thumbnail clearly to Presigned URL
+    Note over Client, S3Raw: 2. Direct Upload Phase
+    Client->>S3Raw: PUT Video File directly to Presigned URL
+    Client->>S3Raw: PUT Thumbnail clearly to Presigned URL
 
-    Note over Client, Postgres DB: 3. Metadata Commitment
-    Client->>FastAPI (Backend): POST /upload/video/metadata (title, desc)
-    FastAPI (Backend)->>Postgres DB: Save Video Details (Status: IN_PROGRESS)
-    FastAPI (Backend)-->>Client: Metadata Saved Success
+    Note over Client, DB: 3. Metadata Commitment
+    Client->>Backend: POST /upload/video/metadata (title, desc)
+    Backend->>DB: Save Video Details (Status: IN_PROGRESS)
+    Backend-->>Client: Metadata Saved Success
 
-    Note over AWS S3 (Raw Video), AWS S3 (Processed): 4. Background Processing Pipeline
-    AWS S3 (Raw Video)-->>Transcoder (SQS + ECS): S3 Event triggers SQS Queue Message
-    Transcoder (SQS + ECS)->>AWS S3 (Raw Video): Download Raw Video
-    Note right of Transcoder (SQS + ECS): FFmpeg transcodes video into multiple resolutions (HLS/DASH)
-    Transcoder (SQS + ECS)->>AWS S3 (Processed): Upload transcoded chunks and playlists
+    Note over S3Raw, S3Processed: 4. Background Processing Pipeline
+    S3Raw-->>Transcoder: S3 Event triggers SQS Queue Message
+    Transcoder->>S3Raw: Download Raw Video
+    Note right of Transcoder: FFmpeg transcodes video into multiple resolutions (HLS/DASH)
+    Transcoder->>S3Processed: Upload transcoded chunks and playlists
     
-    Note over Transcoder (SQS + ECS), Postgres DB: 5. Finalization
-    Transcoder (SQS + ECS)->>FastAPI (Backend): PUT /videos/ (status: COMPLETED)
-    FastAPI (Backend)->>Postgres DB: Update Metadata Video Status -> COMPLETED
+    Note over Transcoder, DB: 5. Finalization
+    Transcoder->>Backend: PUT /videos/ (status: COMPLETED)
+    Backend->>DB: Update Metadata Video Status -> COMPLETED
 ```
 
 ---
